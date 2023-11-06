@@ -71,9 +71,35 @@ const deleteCourse = async (req, res) => {
   }
 };
 
+//update a course
+const updateCourse = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const course = await Course.findByIdAndUpdate(
+      { _id: id },
+      { ...req.body },
+      { new: true, runValidators: true }
+    );
+
+    if (!course) {
+      return res.status(404).json({
+        error_message: "No matching course found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Update succsessful",
+      course,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createCourse,
   getAllCourses,
   getCourse,
   deleteCourse,
+  updateCourse,
 };
